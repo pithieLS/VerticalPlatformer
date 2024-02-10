@@ -10,18 +10,17 @@ public class sOneWayPlatform : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         GameObject _player = GameObject.FindGameObjectWithTag("Player");
-
         Collider2D _playerCollider = _player.GetComponent<Collider2D>();
 
-        float playerBottom = transform.TransformPoint(_playerCollider.bounds.min).y;
-        float platformTop = transform.TransformPoint(platformCollider.bounds.max).y;
+        float playerBottom = _playerCollider.bounds.min.y;
+        float platformTop = platformCollider.bounds.max.y;
 
         bool _isPlayerUnderPlatform = playerBottom < platformTop;
 

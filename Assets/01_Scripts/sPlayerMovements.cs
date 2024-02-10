@@ -54,7 +54,6 @@ public class sPlayerController : MonoBehaviour
         if (isWallSliding)
             if (!CheckIfOnWall())
                 SetWallSliding(false);
-
     }
 
     private void FixedUpdate()
