@@ -31,8 +31,8 @@ public class sPlayerController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        playerCollider = GetComponent<BoxCollider2D>();
         playerAnimator = GetComponent<Animator>();
+        playerCollider = GetComponent<BoxCollider2D>();
     }
 
     void Start()
@@ -54,6 +54,8 @@ public class sPlayerController : MonoBehaviour
         if (isWallSliding)
             if (!CheckIfOnWall())
                 SetWallSliding(false);
+
+        CheckIfGrounded();
     }
 
     private void FixedUpdate()
@@ -65,15 +67,18 @@ public class sPlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // Check for wall collision
         LayerMask collisionLayer = collision.gameObject.layer;
-
-        if (collisionLayer == groundLayerNumber || collisionLayer == wallLayerNumber)
-            ResetJump();
-
-        if (collisionLayer == groundLayerNumber)
-            HandleGroundCollision();
-        if(collisionLayer == wallLayerNumber)
+        if(collisionLayer == wallLayerNumber && collisionLayer == wallLayerNumber)
             HandleWallCollision();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Check for ground collision
+        LayerMask collisionLayer = collision.gameObject.layer;
+        if (collisionLayer == groundLayerNumber && CheckIfGrounded())
+             HandleGroundCollision();
     }
 
     private void MovePlayer()
@@ -93,7 +98,6 @@ public class sPlayerController : MonoBehaviour
             SetWallSliding(true);
 
         ResetJump();
-
     }
 
     private void HandleGroundCollision()
@@ -148,13 +152,17 @@ public class sPlayerController : MonoBehaviour
         if(isWallSliding)
         {
             rb.gravityScale = GravityScale / 5;
+            rb.velocity = new Vector2(rb.velocity.x, 0);
             currentSpeed = 0.0f;
         }
     }
 
     private bool CheckIfGrounded()
     {
-        RaycastHit2D boxcastHit = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
+        Vector2 origin = transform.position - Vector3.up * playerCollider.size.y;
+
+        // Perform the BoxCast
+        RaycastHit2D boxcastHit = Physics2D.BoxCast(origin, playerCollider.size, 0f, Vector2.down, 0, groundLayer);
 
         return boxcastHit.collider != null;
     }

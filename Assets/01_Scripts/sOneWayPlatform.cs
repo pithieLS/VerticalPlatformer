@@ -16,6 +16,10 @@ public class sOneWayPlatform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
         GameObject _player = GameObject.FindGameObjectWithTag("Player");
         Collider2D _playerCollider = _player.GetComponent<Collider2D>();
 
