@@ -5,7 +5,13 @@ using UnityEngine;
 public class sPlayerCamera : MonoBehaviour
 {
     public float smoothSpeed = 0.05f;
-    public GameObject player;
+    private GameObject player;
+
+    private void Awake()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
+
     // Start is called before the first frame update
     void Start()
     {
