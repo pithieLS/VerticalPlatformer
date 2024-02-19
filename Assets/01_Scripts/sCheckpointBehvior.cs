@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class sCheckpointBehvior : MonoBehaviour
 {
+    public int checkpointCost = 10;
     private SpriteRenderer spriteRenderer;
 
     private void Awake()
@@ -34,9 +35,11 @@ public class sCheckpointBehvior : MonoBehaviour
     private void OnTooked(GameObject _player)
     {
         sPlayerBehavior playerBehavior = _player.GetComponent<sPlayerBehavior>();
+        if (playerBehavior.coinsNb < checkpointCost)
+            return;
 
         playerBehavior.lastCheckpoint = this.gameObject;
-
+        playerBehavior.coinsNb -= checkpointCost;
         spriteRenderer.color = Color.green;
     }
 }
