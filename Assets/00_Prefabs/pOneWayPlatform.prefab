@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5406819735913377314}
   m_Layer: 7
   m_Name: Collision
-  m_TagString: Untagged
+  m_TagString: Platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 1907515898476509837}
   m_Layer: 7
   m_Name: pOneWayPlatform
-  m_TagString: Untagged
+  m_TagString: Platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

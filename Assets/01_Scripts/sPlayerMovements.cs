@@ -55,7 +55,7 @@ public class sPlayerController : MonoBehaviour
             if (!CheckIfOnWall())
                 SetWallSliding(false);
 
-        CheckIfGrounded();
+        //CheckIfGrounded();
     }
 
     private void FixedUpdate()
@@ -69,16 +69,22 @@ public class sPlayerController : MonoBehaviour
     {
         // Check for wall collision
         LayerMask collisionLayer = collision.gameObject.layer;
-        if(collisionLayer == wallLayerNumber && collisionLayer == wallLayerNumber)
-            HandleWallCollision();
+        if(collisionLayer == wallLayerNumber)
+            HandleWallCollision(collision);
+        if (collisionLayer == groundLayerNumber && CheckIfGrounded(collision))
+            HandleGroundCollision();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        // Check for ground collision
         LayerMask collisionLayer = collision.gameObject.layer;
-        if (collisionLayer == groundLayerNumber && CheckIfGrounded())
-             HandleGroundCollision();
+        if (collisionLayer == wallLayerNumber)
+        {
+            if(!CheckIfGrounded(collision))
+                SetGrounded(false);
+        }
+        if (collisionLayer == groundLayerNumber)
+            SetGrounded(false);
     }
 
     private void MovePlayer()
@@ -86,8 +92,25 @@ public class sPlayerController : MonoBehaviour
         rb.velocity = new Vector2(currentSpeed * playerDirection, rb.velocity.y);
     }
 
-    private void HandleWallCollision()
+    private void HandleWallCollision(Collision2D collision)
     {
+        // Check if collision isn't from the sides
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            Vector2 normal = contact.normal;
+            if (Vector2.Dot(normal, Vector2.up) > 0.9f)
+            {
+                Debug.Log("Collision is from below");
+                HandleGroundCollision();
+                return;
+            }
+            else if (Vector2.Dot(normal, Vector2.down) > 0.9f)
+            {
+                Debug.Log("Collision is from above");
+                return;
+            }
+        }
+
         playerDirection *= -1;
 
         // Rotate sprite in relation to it's direction
@@ -157,8 +180,19 @@ public class sPlayerController : MonoBehaviour
         }
     }
 
-    private bool CheckIfGrounded()
+    private bool CheckIfGrounded(Collision2D collision)
     {
+        if(collision.gameObject.tag == "Platform")
+        {
+            BoxCollider2D _platformCollider = collision.gameObject.GetComponent<BoxCollider2D>();
+            float playerBottom = playerCollider.bounds.min.y;
+            float platformTop = _platformCollider.bounds.max.y;
+
+            bool _isPlayerUnderPlatform = playerBottom < platformTop;
+
+            return !_isPlayerUnderPlatform;
+        }
+
         Vector2 origin = transform.position - Vector3.up * playerCollider.size.y;
 
         // Perform the BoxCast

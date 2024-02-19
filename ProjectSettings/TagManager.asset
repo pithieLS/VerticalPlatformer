@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Spike
   - Checkpoint
+  - Coin
+  - Platform
   layers:
   - Default
   - TransparentFX
