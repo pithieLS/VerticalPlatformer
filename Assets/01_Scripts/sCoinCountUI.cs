@@ -7,8 +7,6 @@ using UnityEngine;
 public class sCoinCountUI : MonoBehaviour
 {
     public TextMeshProUGUI coinCountTMP;
-    public TextMeshProUGUI shadowTMP;
-
     // Start is called before the first frame update
     private void Start()
     {
@@ -32,9 +30,6 @@ public class sCoinCountUI : MonoBehaviour
     public void UpdateCounter()
     {
         sPlayerBehavior playerBehavior = GameObject.FindObjectOfType<sPlayerBehavior>();
-
-        //coinCountTMP.SetText(string.Format("{0:D3}", playerBehavior.coinsNb.ToString()));
-        //shadowTMP.SetText(string.Format("{0:D3}", playerBehavior.coinsNb.ToString()));
 
         coinCountTMP.SetText(playerBehavior.coinsNb.ToString("000"));
     }

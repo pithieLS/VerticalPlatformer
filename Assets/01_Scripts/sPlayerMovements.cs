@@ -20,12 +20,16 @@ public class sPlayerController : MonoBehaviour
     public float GravityScale = 1.0f;
     [SerializeField] public LayerMask groundLayer;
     [SerializeField] public LayerMask wallLayer;
+    private Vector2 previousVelocity;
     private float currentSpeed = 0.0f;
     private int wallLayerNumber;
     private int groundLayerNumber;
     private int playerDirection = 1;
     private bool isWallSliding = false;
     private bool isGrounded = false;
+
+    // FXs
+    public GameObject LandingFX;
 
 
     private void Awake()
@@ -54,15 +58,11 @@ public class sPlayerController : MonoBehaviour
         if (isWallSliding)
             if (!CheckIfOnWall())
                 SetWallSliding(false);
-
-        //CheckIfGrounded();
     }
-
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        //Debug.Log(isWallSliding + "//" + isGrounded);
-        //Debug.Log(currentSpeed);
         MovePlayer();
+        previousVelocity = rb.velocity;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -98,6 +98,10 @@ public class sPlayerController : MonoBehaviour
         foreach (ContactPoint2D contact in collision.contacts)
         {
             Vector2 normal = contact.normal;
+
+            if (Vector2.Dot(normal, Vector2.right) > 0.9f || Vector2.Dot(normal, Vector2.left) > 0.9f)
+                break;
+
             if (Vector2.Dot(normal, Vector2.up) > 0.9f)
             {
                 Debug.Log("Collision is from below");
@@ -164,6 +168,12 @@ public class sPlayerController : MonoBehaviour
         {
             rb.gravityScale = GravityScale;
             currentSpeed = playerSpeed;
+
+            if (Mathf.Abs(previousVelocity.y) >= 0.3f)
+            {
+                Vector3 footLocation = playerCollider.bounds.center - playerCollider.bounds.extents + Vector3.down * playerCollider.bounds.extents.y;
+                Instantiate(LandingFX, rb.transform.position, Quaternion.identity);
+            }
         }
     }
 
