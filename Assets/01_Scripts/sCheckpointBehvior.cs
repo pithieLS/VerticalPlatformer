@@ -5,7 +5,13 @@ using UnityEngine;
 public class sCheckpointBehvior : MonoBehaviour
 {
     public int checkpointCost = 10;
+    private bool isTooked = false;
     private SpriteRenderer spriteRenderer;
+
+    [Header("Sprites")]
+    public Sprite checkpointGreen;
+    public Sprite checkpointOrange;
+    public Sprite checkpointRed;
 
     private void Awake()
     {
@@ -26,6 +32,9 @@ public class sCheckpointBehvior : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (isTooked)
+            return;
+
         if (collision.gameObject.tag != "Player")
             return;
 
@@ -36,10 +45,30 @@ public class sCheckpointBehvior : MonoBehaviour
     {
         sPlayerBehavior playerBehavior = _player.GetComponent<sPlayerBehavior>();
         if (playerBehavior.coinsNb < checkpointCost)
+        {
+            StartCoroutine(OnCantBuy());
             return;
+        }
 
-        playerBehavior.lastCheckpoint = this.gameObject;
-        playerBehavior.coinsNb -= checkpointCost;
-        spriteRenderer.color = Color.green;
+        BuyCheckpoint(playerBehavior);
+    }
+
+    IEnumerator OnCantBuy()
+    {
+        spriteRenderer.sprite = checkpointRed;
+
+        yield return new WaitForSeconds(0.5f);
+
+        spriteRenderer.sprite = checkpointOrange;
+    }
+
+    private void BuyCheckpoint(sPlayerBehavior inPlayerBehavior)
+    {
+        inPlayerBehavior.lastCheckpoint = this.gameObject;
+        inPlayerBehavior.coinsNb -= checkpointCost;
+        spriteRenderer.sprite = checkpointGreen;
+
+        sCoinCountUI coinCountUI = GameObject.FindObjectOfType<sCoinCountUI>();
+        coinCountUI.UpdateCounter();
     }
 }

@@ -151,7 +151,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1763926789061022232}
-  - component: {fileID: 1907515898476509837}
   m_Layer: 7
   m_Name: pOneWayPlatform
   m_TagString: Platform
@@ -176,20 +175,6 @@ Transform:
   - {fileID: 3663680560349287778}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1907515898476509837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6275250698210660891}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c41daca16f8ff45a04cd92d14f2546, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  platformEffector: {fileID: 5406819735913377314}
-  platformCollider: {fileID: 3767622994700381381}
 --- !u!1 &7090404626022895888
 GameObject:
   m_ObjectHideFlags: 0

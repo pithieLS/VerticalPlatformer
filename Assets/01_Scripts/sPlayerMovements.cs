@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Net.Mail;
 using UnityEngine;
 
-public class sPlayerController : MonoBehaviour
+public class sPlayerMovements : MonoBehaviour
 {
     // Components
     private BoxCollider2D playerCollider;
@@ -27,10 +27,6 @@ public class sPlayerController : MonoBehaviour
     private int playerDirection = 1;
     private bool isWallSliding = false;
     private bool isGrounded = false;
-
-    // FXs
-    public GameObject LandingFX;
-
 
     private void Awake()
     {
@@ -127,7 +123,7 @@ public class sPlayerController : MonoBehaviour
         ResetJump();
     }
 
-    private void HandleGroundCollision()
+    public void HandleGroundCollision()
     {
         SetGrounded(true);
         SetWallSliding(false);
@@ -169,10 +165,9 @@ public class sPlayerController : MonoBehaviour
             rb.gravityScale = GravityScale;
             currentSpeed = playerSpeed;
 
-            if (Mathf.Abs(previousVelocity.y) >= 0.3f)
+            if (previousVelocity.y <= -1.5f)
             {
-                Vector3 footLocation = playerCollider.bounds.center - playerCollider.bounds.extents + Vector3.down * playerCollider.bounds.extents.y;
-                Instantiate(LandingFX, rb.transform.position, Quaternion.identity);
+                GetComponent<sPlayerBehavior>().SpawnLandingFX();
             }
         }
     }
