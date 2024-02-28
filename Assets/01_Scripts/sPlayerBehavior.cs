@@ -8,6 +8,7 @@ public class sPlayerBehavior : MonoBehaviour
     [Header("FX Related")]
     public GameObject landingFX;
     public GameObject trailFX;
+    public GameObject playerSlideFX;
     public Shader allWhiteShader;
 
     [HideInInspector] public GameObject lastCheckpoint;
@@ -114,5 +115,15 @@ public class sPlayerBehavior : MonoBehaviour
         trailGO.transform.parent = attachTarget.transform;
 
         return trailGO;
+    }
+
+    public void EnableSlideFX(bool isEnabled)
+    {
+        ParticleSystem slideParticleSystem = playerSlideFX.GetComponent<ParticleSystem>();
+
+        if(isEnabled)
+            slideParticleSystem.Play();
+        else
+            slideParticleSystem.Stop();
     }
 }

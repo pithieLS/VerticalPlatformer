@@ -177,11 +177,14 @@ public class sPlayerMovements : MonoBehaviour
         isWallSliding = _IsWallSliding;
         playerAnimator.SetBool("isWallSliding", _IsWallSliding);
 
-        if(isWallSliding)
+        GetComponent<sPlayerBehavior>().EnableSlideFX(_IsWallSliding);
+
+        if (isWallSliding)
         {
             rb.gravityScale = GravityScale / 5;
             rb.velocity = new Vector2(rb.velocity.x, 0);
             currentSpeed = 0.0f;
+
         }
     }
 
@@ -191,9 +194,9 @@ public class sPlayerMovements : MonoBehaviour
         {
             BoxCollider2D _platformCollider = collision.gameObject.GetComponent<BoxCollider2D>();
             float playerBottom = playerCollider.bounds.min.y;
-            float platformTop = _platformCollider.bounds.max.y;
+            float platformBottom = _platformCollider.bounds.min.y;
 
-            bool _isPlayerUnderPlatform = playerBottom < platformTop;
+            bool _isPlayerUnderPlatform = playerBottom < platformBottom;
 
             return !_isPlayerUnderPlatform;
         }

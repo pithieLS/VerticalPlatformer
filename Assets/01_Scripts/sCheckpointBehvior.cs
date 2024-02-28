@@ -8,6 +8,10 @@ public class sCheckpointBehvior : MonoBehaviour
     private bool isTooked = false;
     private SpriteRenderer spriteRenderer;
 
+    private Color colorOrange = new Color(767.0f, 90.0f, 0.0f, 0.0f);
+    private Color colorRed = new Color(1367.0f, 0.0f, 0.0f, 0.0f);
+    private Color colorGreen = new Color(0.0f, 1825.0f, 0.0f, 0.0f);
+
     [Header("Sprites")]
     public Sprite checkpointGreen;
     public Sprite checkpointOrange;
@@ -16,6 +20,10 @@ public class sCheckpointBehvior : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        spriteRenderer.material.SetColor("_GlowColor", colorOrange);
+
+        Debug.Log(spriteRenderer.material.GetColor("_GlowColor"));
     }
 
     // Start is called before the first frame update
@@ -55,17 +63,27 @@ public class sCheckpointBehvior : MonoBehaviour
 
     IEnumerator OnCantBuy()
     {
+        spriteRenderer.material.SetColor("_GlowColor", colorRed);
+
         spriteRenderer.sprite = checkpointRed;
 
         yield return new WaitForSeconds(0.5f);
 
+        spriteRenderer.material.SetColor("_GlowColor", colorOrange);
         spriteRenderer.sprite = checkpointOrange;
     }
 
     private void BuyCheckpoint(sPlayerBehavior inPlayerBehavior)
     {
+        if (isTooked)
+            return;
+
+        isTooked = true;
+
         inPlayerBehavior.lastCheckpoint = this.gameObject;
         inPlayerBehavior.coinsNb -= checkpointCost;
+
+        spriteRenderer.material.SetColor("_GlowColor", colorGreen);
         spriteRenderer.sprite = checkpointGreen;
 
         sCoinCountUI coinCountUI = GameObject.FindObjectOfType<sCoinCountUI>();

@@ -24,6 +24,8 @@ public class sCoinBehavior : MonoBehaviour
         if (bIsCollected)
             return;
 
+        Destroy(GetComponentInChildren<CircleCollider2D>());
+
         bIsCollected = true;
         coinAnimator.SetBool("isCoinCollected", true);
 
