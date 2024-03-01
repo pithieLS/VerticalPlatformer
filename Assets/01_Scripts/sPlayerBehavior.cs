@@ -9,7 +9,7 @@ public class sPlayerBehavior : MonoBehaviour
     public GameObject landingFX;
     public GameObject trailFX;
     public GameObject playerSlideFX;
-    public Shader allWhiteShader;
+    public Material trailGlowMaterial;
 
     [HideInInspector] public GameObject lastCheckpoint;
     [HideInInspector] public int coinsNb;
@@ -62,6 +62,8 @@ public class sPlayerBehavior : MonoBehaviour
     IEnumerator RespawnCoroutine()
     {
         GameObject trailGO = SpawnTrailFX(gameObject);
+        Material m_oldMat = spriteRenderer.material;
+        spriteRenderer.material = trailGlowMaterial;
 
         float timer = 0;
         float alpha = 0;
@@ -70,9 +72,6 @@ public class sPlayerBehavior : MonoBehaviour
         Vector3 lastPosition = transform.position;
         Vector3 respawnPosition = lastCheckpoint ? lastCheckpoint.transform.position : startPosition;
         Vector3 lerpedPosition;
-
-        Shader m_defaultShader = spriteRenderer.material.shader;
-        spriteRenderer.material.shader = allWhiteShader; // Make player all white
 
         while (alpha < 1)
         {
@@ -94,7 +93,7 @@ public class sPlayerBehavior : MonoBehaviour
         
         playerMovement.HandleGroundCollision();
 
-        spriteRenderer.material.shader = m_defaultShader; // Reset player color (w/ shader)
+        spriteRenderer.material = m_oldMat;
 
         // Detach the trail and wait for the trail to finish then destroy it
         trailGO.transform.parent = null;

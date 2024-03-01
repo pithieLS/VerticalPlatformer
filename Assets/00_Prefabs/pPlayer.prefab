@@ -266,6 +266,7 @@ MonoBehaviour:
   trailFX: {fileID: 1707437215152620282, guid: dd8d4ef559bad6b4a8437fa459dcb721, type: 3}
   playerSlideFX: {fileID: 4895971957968019808}
   allWhiteShader: {fileID: 10101, guid: 0000000000000000e000000000000000, type: 0}
+  trailGlowMaterial: {fileID: 2100000, guid: 829a3e9d2b842dd48894addb82698ddb, type: 2}
   lastCheckpoint: {fileID: 0}
   coinsNb: 0
 --- !u!1001 &7172507824872775126

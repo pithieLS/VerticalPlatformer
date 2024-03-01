@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1336712267019454052}
   - component: {fileID: 8347650880102579607}
   - component: {fileID: 5651217039436351909}
+  - component: {fileID: 107958668506332502}
   m_Layer: 0
   m_Name: pSlideFX
   m_TagString: Untagged
@@ -116,7 +117,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.2
+      scalar: 0.1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -870,7 +871,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 50
+      scalar: 100
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -4830,3 +4831,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &107958668506332502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2339656647635729590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75fbfceb19ddc3d4aade6785d0be992a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocityMax: 3
+  velocityTreshold: 1
+  minSize: {x: 0, y: 0}
+  maxSize: {x: 0.2, y: 0.4}
