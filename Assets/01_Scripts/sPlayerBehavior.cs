@@ -39,7 +39,7 @@ public class sPlayerBehavior : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Spike")
+        if(collision.gameObject.tag == "Damaging")
             OnHitSpikes();
     }
 
@@ -51,6 +51,9 @@ public class sPlayerBehavior : MonoBehaviour
             sCoinBehavior _coinBehavior = collision.gameObject.GetComponentInParent<sCoinBehavior>();
             _coinBehavior.OnCollected();
         }
+
+        if (collision.gameObject.tag == "Damaging")
+            OnHitSpikes();
     }
 
     void OnHitSpikes()
@@ -65,9 +68,12 @@ public class sPlayerBehavior : MonoBehaviour
         Material m_oldMat = spriteRenderer.material;
         spriteRenderer.material = trailGlowMaterial;
 
+        BoxCollider2D m_playerCollider = GetComponent<BoxCollider2D>();
+        m_playerCollider.enabled = false;
+
         float timer = 0;
         float alpha = 0;
-        float lerpDuration = 0.4f;
+        float lerpDuration = 0.5f;
 
         Vector3 lastPosition = transform.position;
         Vector3 respawnPosition = lastCheckpoint ? lastCheckpoint.transform.position : startPosition;
@@ -91,9 +97,11 @@ public class sPlayerBehavior : MonoBehaviour
 
         transform.position = respawnPosition;
         
-        playerMovement.HandleGroundCollision();
+        playerMovement.HandleGroundCollision(null);
 
         spriteRenderer.material = m_oldMat;
+
+        m_playerCollider.enabled = true;
 
         // Detach the trail and wait for the trail to finish then destroy it
         trailGO.transform.parent = null;

@@ -22,8 +22,6 @@ public class sCheckpointBehvior : MonoBehaviour
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         spriteRenderer.material.SetColor("_GlowColor", colorOrange);
-
-        Debug.Log(spriteRenderer.material.GetColor("_GlowColor"));
     }
 
     // Start is called before the first frame update

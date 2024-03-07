@@ -4,10 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Spike
   - Checkpoint
   - Coin
   - Platform
+  - Damaging
   layers:
   - Default
   - TransparentFX

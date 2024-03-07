@@ -21,11 +21,11 @@ public class sPlayerMovements : MonoBehaviour
     [SerializeField] public LayerMask groundLayer;
     [SerializeField] public LayerMask wallLayer;
     private Vector2 previousVelocity;
-    private float currentSpeed = 0.0f;
+    [HideInInspector] public float currentSpeed = 0.0f;
     private int wallLayerNumber;
     private int groundLayerNumber;
-    private int playerDirection = 1;
-    private bool isWallSliding = false;
+    [HideInInspector] public int playerDirection = 1;
+    [HideInInspector] public bool isWallSliding = false;
     private bool isGrounded = false;
 
     private void Awake()
@@ -68,7 +68,7 @@ public class sPlayerMovements : MonoBehaviour
         if(collisionLayer == wallLayerNumber)
             HandleWallCollision(collision);
         if (collisionLayer == groundLayerNumber && CheckIfGrounded(collision))
-            HandleGroundCollision();
+            HandleGroundCollision(collision);
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -85,31 +85,31 @@ public class sPlayerMovements : MonoBehaviour
 
     private void MovePlayer()
     {
-        rb.velocity = new Vector2(currentSpeed * playerDirection, rb.velocity.y);
+        if(!isWallSliding)
+            rb.velocity = new Vector2(currentSpeed * playerDirection, rb.velocity.y);
     }
 
-    private void HandleWallCollision(Collision2D collision)
+    public void HandleWallCollision(Collision2D collision)
     {
         // Check if collision isn't from the sides
-        foreach (ContactPoint2D contact in collision.contacts)
-        {
-            Vector2 normal = contact.normal;
-
-            if (Vector2.Dot(normal, Vector2.right) > 0.9f || Vector2.Dot(normal, Vector2.left) > 0.9f)
-                break;
-
-            if (Vector2.Dot(normal, Vector2.up) > 0.9f)
+        if(collision != null)
+            foreach (ContactPoint2D contact in collision.contacts)
             {
-                Debug.Log("Collision is from below");
-                HandleGroundCollision();
-                return;
+                Vector2 normal = contact.normal;
+
+                if (Vector2.Dot(normal, Vector2.right) > 0.9f || Vector2.Dot(normal, Vector2.left) > 0.9f)
+                    break;
+
+                if (Vector2.Dot(normal, Vector2.up) > 0.9f)
+                {
+                    HandleGroundCollision(collision);
+                    return;
+                }
+                else if (Vector2.Dot(normal, Vector2.down) > 0.9f)
+                {
+                    //return;
+                }
             }
-            else if (Vector2.Dot(normal, Vector2.down) > 0.9f)
-            {
-                Debug.Log("Collision is from above");
-                return;
-            }
-        }
 
         playerDirection *= -1;
 
@@ -123,8 +123,21 @@ public class sPlayerMovements : MonoBehaviour
         ResetJump();
     }
 
-    public void HandleGroundCollision()
+    public void HandleGroundCollision(Collision2D collision)
     {
+        // Check if collision is from the sides
+        if(collision != null)
+            foreach (ContactPoint2D contact in collision.contacts)
+            {
+                Vector2 normal = contact.normal;
+
+                if (Vector2.Dot(normal, Vector2.left) > 0.9f || Vector2.Dot(normal, Vector2.right) > 0.9f)
+                {
+                    HandleWallCollision(collision);
+                    return;
+                }
+            }
+
         SetGrounded(true);
         SetWallSliding(false);
 
@@ -150,7 +163,7 @@ public class sPlayerMovements : MonoBehaviour
 
     }
 
-    private void ResetJump()
+    public void ResetJump()
     {
         jumpCount = 0;
     }
@@ -183,8 +196,6 @@ public class sPlayerMovements : MonoBehaviour
         {
             rb.gravityScale = GravityScale / 5;
             rb.velocity = new Vector2(rb.velocity.x, 0);
-            currentSpeed = 0.0f;
-
         }
     }
 

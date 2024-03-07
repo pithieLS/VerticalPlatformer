@@ -27,7 +27,6 @@ public class sSlideFX : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print(Mathf.Abs(playerRb.velocity.y));
         ParticleSystem.MainModule mainModule = slideParticleSystem.main;
 
         if (Mathf.Abs(playerRb.velocity.y) < velocityTreshold)
