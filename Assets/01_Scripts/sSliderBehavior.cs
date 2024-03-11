@@ -29,26 +29,9 @@ public class sSliderBehavior : MonoBehaviour
         if (isPlayerOnSlider)
             return;
 
+        playerMovement.HandleWallCollision();
+
         isPlayerOnSlider = true;
-
-        Rigidbody2D playerRb = playerMovement.GetComponent<Rigidbody2D>();
-
-        playerMovement.playerDirection = isGoingRight ? 1 : -1;
-
-        // Scale sprite in relation to it's direction
-        float newScaleX = Math.Abs(playerMovement.transform.localScale.x) * playerMovement.playerDirection;
-        playerMovement.transform.localScale = new Vector3(newScaleX, playerMovement.transform.localScale.y, playerMovement.transform.localScale.z);
-
-        playerMovement.isWallSliding = true;
-
-        playerMovement.GetComponent<Animator>().SetBool("isWallSliding", true);
-        
-        playerMovement.GetComponent<sPlayerBehavior>().EnableSlideFX(true);
-
-        playerRb.velocity = new Vector2(0, 0);
-
-        playerMovement.currentSpeed = playerMovement.playerSpeed / 2;
-        playerMovement.ResetJump();
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -57,7 +40,5 @@ public class sSliderBehavior : MonoBehaviour
             return;
 
         isPlayerOnSlider = false;
-        sPlayerMovements playerMovement = collision.gameObject.GetComponent<sPlayerMovements>();
-        playerMovement.GetComponent<Animator>().SetBool("isWallSliding", false);
     }
 }

@@ -97,7 +97,7 @@ public class sPlayerBehavior : MonoBehaviour
 
         transform.position = respawnPosition;
         
-        playerMovement.HandleGroundCollision(null);
+        playerMovement.HandleGroundCollision();
 
         spriteRenderer.material = m_oldMat;
 

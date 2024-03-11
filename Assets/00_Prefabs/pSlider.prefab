@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2388283357595368099}
   - component: {fileID: 4321672025083122555}
   - component: {fileID: 1968506620676545728}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: pSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c70dd10de2c482e4ca3cd6f62bd01211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGoingRight: 0
 --- !u!68 &1968506620676545728
 EdgeCollider2D:
   m_ObjectHideFlags: 0

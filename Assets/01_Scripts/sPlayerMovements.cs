@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Mail;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class sPlayerMovements : MonoBehaviour
@@ -42,14 +43,26 @@ public class sPlayerMovements : MonoBehaviour
         // Reverse bit shifting from the layermask value
         wallLayerNumber = (int)(Mathf.Log(wallLayer.value) / Mathf.Log(2));
         groundLayerNumber = (int)(Mathf.Log(groundLayer.value) / Mathf.Log(2));
+
+        PhysicsMaterial2D physicsMaterial = new PhysicsMaterial2D();
+        rb.sharedMaterial = physicsMaterial;
+        physicsMaterial.friction = 0;
+
+        print(physicsMaterial.friction);
     }
 
     void Update()
     {
-        // Handle touch input
+        // Handle touch input (for mobile)
         if (Input.touchCount > 0)
             if (Input.GetTouch(0).phase == TouchPhase.Began)
                 HandleJump();
+
+        // Handle spacebar or LMB press (for computer)
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+        {
+            HandleJump();
+        }
 
         if (isWallSliding)
             if (!CheckIfOnWall())
@@ -60,15 +73,16 @@ public class sPlayerMovements : MonoBehaviour
         MovePlayer();
         previousVelocity = rb.velocity;
     }
-
+    int index = 0;
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Check for wall collision
-        LayerMask collisionLayer = collision.gameObject.layer;
-        if(collisionLayer == wallLayerNumber)
-            HandleWallCollision(collision);
-        if (collisionLayer == groundLayerNumber && CheckIfGrounded(collision))
-            HandleGroundCollision(collision);
+        Vector2 normal = collision.contacts[0].normal;
+
+        print(index + ", " + "up: " + Vector2.Dot(normal, Vector2.up) + " // " + "right: " + Vector2.Dot(normal, Vector2.right) + " // " + "down: " + Vector2.Dot(normal, Vector2.down) + " // " + "left: " + Vector2.Dot(normal, Vector2.left));
+        if (Vector2.Dot(normal, Vector2.down) == -1)
+            HandleGroundCollision();
+        else if (Vector2.Dot(normal, Vector2.right) == -1 || Vector2.Dot(normal, Vector2.left) == -1)
+            HandleWallCollision();
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -89,28 +103,8 @@ public class sPlayerMovements : MonoBehaviour
             rb.velocity = new Vector2(currentSpeed * playerDirection, rb.velocity.y);
     }
 
-    public void HandleWallCollision(Collision2D collision)
+    public void HandleWallCollision()
     {
-        // Check if collision isn't from the sides
-        if(collision != null)
-            foreach (ContactPoint2D contact in collision.contacts)
-            {
-                Vector2 normal = contact.normal;
-
-                if (Vector2.Dot(normal, Vector2.right) > 0.9f || Vector2.Dot(normal, Vector2.left) > 0.9f)
-                    break;
-
-                if (Vector2.Dot(normal, Vector2.up) > 0.9f)
-                {
-                    HandleGroundCollision(collision);
-                    return;
-                }
-                else if (Vector2.Dot(normal, Vector2.down) > 0.9f)
-                {
-                    //return;
-                }
-            }
-
         playerDirection *= -1;
 
         // Rotate sprite in relation to it's direction
@@ -123,21 +117,8 @@ public class sPlayerMovements : MonoBehaviour
         ResetJump();
     }
 
-    public void HandleGroundCollision(Collision2D collision)
+    public void HandleGroundCollision()
     {
-        // Check if collision is from the sides
-        if(collision != null)
-            foreach (ContactPoint2D contact in collision.contacts)
-            {
-                Vector2 normal = contact.normal;
-
-                if (Vector2.Dot(normal, Vector2.left) > 0.9f || Vector2.Dot(normal, Vector2.right) > 0.9f)
-                {
-                    HandleWallCollision(collision);
-                    return;
-                }
-            }
-
         SetGrounded(true);
         SetWallSliding(false);
 
@@ -222,10 +203,30 @@ public class sPlayerMovements : MonoBehaviour
 
     private bool CheckIfOnWall()
     {
-        RaycastHit2D boxcastHitLeft = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.left, 0.1f, wallLayer);
-        RaycastHit2D boxcastHitRight = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.right, 0.1f, wallLayer);
-
+        RaycastHit2D boxcastHitLeft = Physics2D.BoxCast(playerCollider.bounds.center + (Vector3.left * 0.1f), playerCollider.bounds.size, 0, Vector2.left, 0.1f, wallLayer);
+        RaycastHit2D boxcastHitRight = Physics2D.BoxCast(playerCollider.bounds.center + (Vector3.right * 0.1f), playerCollider.bounds.size, 0, Vector2.right, 0.1f, wallLayer);
+        DebugDrawBoxCast(playerCollider.bounds.center + (Vector3.left * 0.1f), playerCollider.bounds.size, Vector2.left, 0.1f);
+        DebugDrawBoxCast(playerCollider.bounds.center + (Vector3.right * 0.1f), playerCollider.bounds.size, Vector2.right, 0.1f);
         bool isWallDetected = boxcastHitLeft.collider != null || boxcastHitRight.collider != null;
         return isWallDetected;
+    }
+
+    private void DebugDrawBoxCast(Vector2 origin, Vector2 size, Vector2 direction, float distance)
+    {
+        UnityEngine.Color color = UnityEngine.Color.red;
+        // Get the corners of the box
+        Vector2 topLeft = origin + size * 0.5f;
+        Vector2 topRight = origin + new Vector2(-size.x * 0.5f, size.y * 0.5f);
+        Vector2 bottomLeft = origin + new Vector2(size.x * 0.5f, -size.y * 0.5f);
+        Vector2 bottomRight = origin - size * 0.5f;
+
+        // Draw the box
+        Debug.DrawLine(topLeft, topRight, color);
+        Debug.DrawLine(topRight, bottomRight, color);
+        Debug.DrawLine(bottomRight, bottomLeft, color);
+        Debug.DrawLine(bottomLeft, topLeft, color);
+
+        // Draw the direction
+        Debug.DrawLine(origin, origin + direction * distance, color);
     }
 }

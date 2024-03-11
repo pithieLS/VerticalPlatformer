@@ -50,6 +50,19 @@ public class sSpitflameController : MonoBehaviour
     {
         if (collision.gameObject.layer == wallLayerNumber)
             RotateCharacter();
+
+        if(collision.gameObject.tag == "Player")
+            foreach (ContactPoint2D contact in collision.contacts)
+            {
+                Vector2 normal = contact.normal;
+
+                if (Vector2.Dot(normal, Vector2.up) > 0.9f)
+                {
+                    // If character jump on top of the enemy, call OnDie()
+                    OnDie();
+                    return;
+                }
+            }
     }
 
     private bool IsVoidInFront()
@@ -120,6 +133,11 @@ public class sSpitflameController : MonoBehaviour
         float shootDirection = playerGO.transform.position.x > transform.position.x ? 1 : -1;
 
         spawnedProjectile.GetComponent<sProjectileBehavior>().LaunchProjectile(new Vector3(shootDirection, 0.0f, 0.0f));
+    }
+
+    private void OnDie()
+    {
+        Destroy(this);
     }
 
     private void FixedUpdate()
