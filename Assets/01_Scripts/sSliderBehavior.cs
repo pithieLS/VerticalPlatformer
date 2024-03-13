@@ -9,16 +9,6 @@ public class sSliderBehavior : MonoBehaviour
 
     private bool isPlayerOnSlider = false;
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -32,6 +22,8 @@ public class sSliderBehavior : MonoBehaviour
         playerMovement.HandleWallCollision();
 
         isPlayerOnSlider = true;
+
+        playerMovement.playerDirection = isGoingRight ? 1 : -1;
     }
 
     private void OnCollisionExit2D(Collision2D collision)

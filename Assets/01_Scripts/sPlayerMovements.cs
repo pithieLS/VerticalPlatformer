@@ -23,6 +23,7 @@ public class sPlayerMovements : MonoBehaviour
     [SerializeField] public LayerMask wallLayer;
     private Vector2 previousVelocity;
     [HideInInspector] public float currentSpeed = 0.0f;
+    [HideInInspector] public bool canMove = true;
     private int wallLayerNumber;
     private int groundLayerNumber;
     [HideInInspector] public int playerDirection = 1;
@@ -56,13 +57,14 @@ public class sPlayerMovements : MonoBehaviour
         // Handle touch input (for mobile)
         if (Input.touchCount > 0)
             if (Input.GetTouch(0).phase == TouchPhase.Began)
-                HandleJump();
+                if(canMove)
+                    HandleJump();
 
         // Handle spacebar or LMB press (for computer)
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
-        {
-            HandleJump();
-        }
+            if(canMove)
+                HandleJump();
+        
 
         if (isWallSliding)
             if (!CheckIfOnWall())
@@ -78,7 +80,6 @@ public class sPlayerMovements : MonoBehaviour
     {
         Vector2 normal = collision.contacts[0].normal;
 
-        print(index + ", " + "up: " + Vector2.Dot(normal, Vector2.up) + " // " + "right: " + Vector2.Dot(normal, Vector2.right) + " // " + "down: " + Vector2.Dot(normal, Vector2.down) + " // " + "left: " + Vector2.Dot(normal, Vector2.left));
         if (Vector2.Dot(normal, Vector2.down) == -1)
             HandleGroundCollision();
         else if (Vector2.Dot(normal, Vector2.right) == -1 || Vector2.Dot(normal, Vector2.left) == -1)

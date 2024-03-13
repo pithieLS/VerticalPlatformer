@@ -12,10 +12,4 @@ public class sStartFX : MonoBehaviour
         transform.position = transform.position + deviation;
         Destroy(gameObject, animLenght);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

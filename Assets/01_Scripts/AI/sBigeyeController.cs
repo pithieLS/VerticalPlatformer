@@ -94,23 +94,4 @@ public class sBigeyeController : MonoBehaviour
             rb.velocity = new Vector2(speed * bigeyeDirection, rb.velocity.y);
         }
     }
-
-    private void DebugDrawBoxCast(Vector2 origin, Vector2 size, Vector2 direction, float distance)
-    {
-        UnityEngine.Color color = UnityEngine.Color.red;
-        // Get the corners of the box
-        Vector2 topLeft = origin + size * 0.5f;
-        Vector2 topRight = origin + new Vector2(-size.x * 0.5f, size.y * 0.5f);
-        Vector2 bottomLeft = origin + new Vector2(size.x * 0.5f, -size.y * 0.5f);
-        Vector2 bottomRight = origin - size * 0.5f;
-
-        // Draw the box
-        Debug.DrawLine(topLeft, topRight, color);
-        Debug.DrawLine(topRight, bottomRight, color);
-        Debug.DrawLine(bottomRight, bottomLeft, color);
-        Debug.DrawLine(bottomLeft, topLeft, color);
-
-        // Draw the direction
-        Debug.DrawLine(origin, origin + direction * distance, color);
-    }
 }

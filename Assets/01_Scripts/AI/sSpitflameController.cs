@@ -50,24 +50,11 @@ public class sSpitflameController : MonoBehaviour
     {
         if (collision.gameObject.layer == wallLayerNumber)
             RotateCharacter();
-
-        if(collision.gameObject.tag == "Player")
-            foreach (ContactPoint2D contact in collision.contacts)
-            {
-                Vector2 normal = contact.normal;
-
-                if (Vector2.Dot(normal, Vector2.up) > 0.9f)
-                {
-                    // If character jump on top of the enemy, call OnDie()
-                    OnDie();
-                    return;
-                }
-            }
     }
 
     private bool IsVoidInFront()
     {
-        Vector2 origin = transform.position + (Vector3.right * 0.3f) * spitflameDirection + Vector3.down * 0.5f;
+        Vector2 origin = transform.position + (Vector3.right * spitflameDirection * 0.01f) + Vector3.down * 0.5f;
         Vector2 size = new Vector2(0.1f, 0.1f);
         float distance = 0.1f;
         bool hasFoundGround = false;
@@ -90,7 +77,7 @@ public class sSpitflameController : MonoBehaviour
     {
         Vector2 center = new Vector2(0.0f, transform.position.y);
         Vector2 size = new Vector2(4, 1);
-        Collider2D hit = Physics2D.OverlapBox(center, size, 0, playerLayer); // TOFIX
+        Collider2D hit = Physics2D.OverlapBox(center, size, 0, playerLayer);
 
         if(hit == null)
             return false;
@@ -135,35 +122,11 @@ public class sSpitflameController : MonoBehaviour
         spawnedProjectile.GetComponent<sProjectileBehavior>().LaunchProjectile(new Vector3(shootDirection, 0.0f, 0.0f));
     }
 
-    private void OnDie()
-    {
-        Destroy(this);
-    }
-
     private void FixedUpdate()
     {
         if (!isAttacking)
         {
             rb.velocity = new Vector2(speed * spitflameDirection, rb.velocity.y);
         }
-    }
-
-    private void DebugDrawBoxCast(Vector2 origin, Vector2 size, Vector2 direction, float distance)
-    {
-        UnityEngine.Color color = UnityEngine.Color.red;
-        // Get the corners of the box
-        Vector2 topLeft = origin + size * 0.5f;
-        Vector2 topRight = origin + new Vector2(-size.x * 0.5f, size.y * 0.5f);
-        Vector2 bottomLeft = origin + new Vector2(size.x * 0.5f, -size.y * 0.5f);
-        Vector2 bottomRight = origin - size * 0.5f;
-
-        // Draw the box
-        Debug.DrawLine(topLeft, topRight, color);
-        Debug.DrawLine(topRight, bottomRight, color);
-        Debug.DrawLine(bottomRight, bottomLeft, color);
-        Debug.DrawLine(bottomLeft, topLeft, color);
-
-        // Draw the direction
-        Debug.DrawLine(origin, origin + direction * distance, color);
     }
 }
